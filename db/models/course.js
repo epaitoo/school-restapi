@@ -7,14 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
+    title: DataTypes.STRING,
+    
+    description: DataTypes.TEXT,
+    
     estimatedTime: {
         type: DataTypes.STRING,
         allowNull: true,

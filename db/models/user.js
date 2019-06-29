@@ -7,22 +7,62 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
+
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull:false,
+      validate: {
+        notEmpty: {
+          msg: "Please Provide a value for first name"
+        },
+        notNull: {
+          msg: "first name is required"
+        }, 
+      }
     },
+
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull:false,
+      validate: {
+        notEmpty: {
+          msg: "Please Provide a value for last name"
+        },
+        notNull: {
+          msg: "Last name is required"
+        }, 
+      }
     },
+
     emailAddress: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate: {
+        notEmpty: {
+          msg: "Please Provide a value for email address"
+        },
+        isEmail: {
+          msg: "Enter a valid email adress"
+        },
+        notNull:{
+          msg: "email address is required"
+        }, 
+      }
     },
+
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate: {
+        notEmpty: {
+          msg: "Please Provide a value for Password"
+        },
+        notNull: {
+          msg: "Password is required"
+        }, 
+      }
+    }
+  
   });
 
   User.associate = (models) => {
