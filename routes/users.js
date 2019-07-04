@@ -9,47 +9,57 @@ const { User } = models;
 
 
 
-const authenticateUser = (req, res, next) => {
-  // let message = null;
 
+
+const authenticateUser = (req, res, next ) => {
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
 
-  // If the user's credentials are available...
   if (credentials) {
-
+    // retrieve the user from the data store by their email Address 
+    // (i.e. the user's "key" from the Authorization header).
     User.findOne({
-      where : {
-        emailAddress : credentials.name
-      }
-    })
-      .then((user) => {
+        where : {
+          emailAddress : credentials.name
+        }
+      }).then(user => {
+          // if user is found compare password "key" 
         if (user) {
-          
-            const authenticated = bcryptjs.compareSync(credentials.pass, user.password);
+          const authenticated = bcryptjs.compareSync(credentials.pass, user.password);
+          // if authenricate store user in the variable
+          // so any middleware functions that follow this middleware function
+          // will have access to the user's information.
           if (authenticated) {
-            req.currentUser = user;
             console.log(`Authentication successful for email Address: ${user.emailAddress}`);
+             users = user;
+            //  console.log(users);
+             next();
           } else {
             console.log(`Authentication failure for user with email Address: ${user.emailAddress}`);
-          }
+            res.status(401).json({ message: 'Access Denied' });
+          } 
         } else {
-          console.log(`User not found : ${credentials.name}`);
-        }
-
-      });
-  } else {
-    console.log('Auth header not found');
-  }
-
- next();
+          console.log( `User not found with email Address: ${credentials.name}`);
+          res.status(401).json({ message: 'Access Denied' });
+        }   
+      })
+    } else {
+      console.log('Auth header not found');
+      res.status(401).json({ message: 'Access Denied' });
+    }
 }
  
 
 
 //Returns the currently authenticated user
-router.get('/', authenticateUser, (req, res) => {
-
+router.get('/',  authenticateUser, (req, res) => {
+  const user = users;
+    res.json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      emailAddress: user.emailAddress
+    })
+ 
 });
 
 // create a new user

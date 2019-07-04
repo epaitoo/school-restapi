@@ -18,9 +18,11 @@ app.use(express.json());
 
 // routes
 const usersRoute = require('./routes/users');
+// const coursesRoute = require('./routes/courses');
 
 // TODO setup your api routes here
 app.use('/api/users', usersRoute);
+// app.use('/api/courses', coursesRoute); 
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
