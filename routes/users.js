@@ -9,8 +9,6 @@ const { User } = models;
 
 
 
-
-
 const authenticateUser = (req, res, next ) => {
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);

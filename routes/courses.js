@@ -28,7 +28,7 @@ router.get('/:id', (req, res) => {
 })
 
 // - Creates a course and sets the Location header to the URI for the course
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
   const course = req.body
 
   Course.create({
@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
     description: course.description,
     estimatedTime: course.estimatedTime,
     materialsNeeded: course.materialsNeeded,
-    UserId: User.id
+    userId: course.userId
   }).then(() => {
     res.status(201).end()
   }).catch((err) => {

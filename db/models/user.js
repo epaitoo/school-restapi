@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Course, { 
       as: 'User',
       foreignKey: {
-        fieldName : 'UserId',
+        fieldName : 'userId',
         allowNull: false,
       } 
     });
