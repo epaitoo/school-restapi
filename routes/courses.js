@@ -14,6 +14,7 @@ router.get('/', (req, res) => {
       {
         model : User,
         as: 'User',
+        attributes: ['id', 'firstName', 'lastName']
       }
     ]
   }).then((course) => {
@@ -23,7 +24,15 @@ router.get('/', (req, res) => {
 
 // - Returns a the course (including the user that owns the course) for the provided course ID
 router.get('/:id', (req, res, next) => {
-  Course.findByPk(req.params.id)
+  Course.findByPk(req.params.id, {
+    include : [
+      {
+        model : User,
+        as: 'User',
+        attributes: ['id', 'firstName', 'lastName']
+      }
+    ]
+  })
     .then((course) => {
       if (course) {
         res.json(course);
