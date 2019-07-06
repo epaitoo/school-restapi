@@ -3,7 +3,9 @@ const router = express.Router();
 const dbModule = require('../db');
 const models = dbModule.models;
 
+const authenticateUser = require('../authenticate');
 const { Course, User } = models;
+
 
 // Returns a list of courses (including the user that owns each course)
 router.get('/', (req, res) => {
@@ -20,34 +22,36 @@ router.get('/', (req, res) => {
 });
 
 // - Returns a the course (including the user that owns the course) for the provided course ID
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
   Course.findByPk(req.params.id)
     .then((course) => {
-      res.json(course)
+      if (course) {
+        res.json(course);
+      } else {
+        res.status(404).json({message: "Course not found"});
+      }
+    }).catch((err) => {
+      return next(err);
     })
 })
 
 // - Creates a course and sets the Location header to the URI for the course
-router.post('/', (req, res, next) => {
+router.post('/', authenticateUser,(req, res, next) => {
+  
   const course = req.body
-
-  Course.create({
-    title: course.title,
-    description: course.description,
-    estimatedTime: course.estimatedTime,
-    materialsNeeded: course.materialsNeeded,
-    userId: course.userId
-  }).then(() => {
-    res.status(201).end()
-  }).catch((err) => {
-    err.status = 400;
-    return next(err);
+  Course.create(course)
+    .then((data) => {
+      res.location(`/api/courses/${data.id}`);
+      res.status(201).end()
+    }).catch((err) => {
+      err.status = 400;
+      return next(err);
   }) 
 
 });
 
 // Updates a course and returns no content
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticateUser, (req, res, next) => {
   Course.findByPk(req.params.id)
     .then((course) => {
       if (course) {
@@ -58,14 +62,20 @@ router.put('/:id', (req, res) => {
   }).then(() => {
     res.status(204).end()
   }).catch((err) => {
-    err.status = 400;
+    if (err.name === "SequelizeValidationError") {
+      res.status(400).json({error: err.message})
+    } else {
+      throw err;
+    }
+  })
+  .catch((err) => {
     return next(err);
   }) 
     
 })
 
 // Deletes a course and returns no content
-router.delete('/:id', () => {
+router.delete('/:id', authenticateUser, (req, res, next) => {
   Course.findByPk(req.params.id)
     .then((course) => {
       if (course) {

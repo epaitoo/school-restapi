@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     emailAddress: {
       type: DataTypes.STRING,
       allowNull:false,
+      unique: {args: true, msg: 'email address already exist'},
       validate: {
         notEmpty: {
           msg: "Please Provide a value for email address"
@@ -67,12 +68,11 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     // TODO Add associations.
-    User.hasMany(models.Course, { 
-      as: 'User',
+    User.hasMany(models.Course, {
       foreignKey: {
-        fieldName : 'userId',
+        fieldName: 'userId',
         allowNull: false,
-      } 
+      }
     });
   };
 
