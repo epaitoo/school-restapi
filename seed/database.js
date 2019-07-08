@@ -102,8 +102,8 @@ class Database {
         lastName VARCHAR(255) NOT NULL DEFAULT '', 
         emailAddress VARCHAR(255) NOT NULL DEFAULT '' UNIQUE, 
         password VARCHAR(255) NOT NULL DEFAULT '', 
-        createdAt DATETIME NOT NULL, 
-        updatedAt DATETIME NOT NULL
+        createdAt DATETIME NULL, 
+        updatedAt DATETIME NULL
       );
     `);
 
@@ -134,8 +134,8 @@ class Database {
         description TEXT NOT NULL DEFAULT '', 
         estimatedTime VARCHAR(255), 
         materialsNeeded VARCHAR(255), 
-        createdAt DATETIME NOT NULL, 
-        updatedAt DATETIME NOT NULL, 
+        createdAt DATETIME NULL, 
+        updatedAt DATETIME NULL, 
         userId INTEGER NOT NULL DEFAULT -1 
           REFERENCES Users (id) ON DELETE CASCADE ON UPDATE CASCADE
       );
