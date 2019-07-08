@@ -10,6 +10,15 @@ const { User } = models;
 
 
 
+// router.get('/', (req, res) => {
+//   User.findAll().then((user) => {
+//     res.json(user);
+//   })
+ 
+// });
+
+
+
 //Returns the currently authenticated user
 router.get('/', authenticateUser,  (req, res) => {
   const user = users;
@@ -28,13 +37,21 @@ router.post('/', (req, res, next) => {
   if (user.password) {
     user.password = bcryptjs.hashSync(user.password);
   }
-  
+  console.log(user);
+
   User.create(user).then(() => {
     res.location('/');
     res.status(201).end()
     
+    
   }).catch((err) => {
-    err.status = 400;
+    if (err.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
+      res.status(400).json({error: err})
+    } else {
+      throw err;
+    }
+  })
+  .catch((err) => {
     return next(err);
   })   
 })
